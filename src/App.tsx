@@ -6,7 +6,8 @@ function App() {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [OTP, setOTP] = useState('')
   const [view, setView] = useState(1)
-  const [loading, setLoading] = useState(false)
+  const [requestOTPLoading, setRequestOTPLoading] = useState(false)
+  const [verifyOTPLoading, setVerifyOTPLoading] = useState(false)
 
   const handlePhoneNumber = (e: any): void => {
     setPhoneNumber(e.target.value)
@@ -16,31 +17,32 @@ function App() {
     setOTP(e.target.value)
   }
 
-  const requestOTP = async () => {
-    setLoading(true)
+  const requestOTP = async (event: any) => {
+    event.preventDefault()
+    setRequestOTPLoading(true)
     try{
       const response = await api.post('/request-otp', {
         phone_number: phoneNumber
       })
-      setLoading(false)
+      setRequestOTPLoading(false)
       setView(2)
     }catch(error) {
-      setLoading(false)
+      setRequestOTPLoading(false)
       console.log(error)
     }
   }
 
   const verifyOTP = async () => {
-    setLoading(true)
+    setVerifyOTPLoading(true)
     try{
       const response = await api.post('/verify-otp', {
         phone_number: phoneNumber,
         auth_code: OTP
       })
-      setLoading(false)
+      setVerifyOTPLoading(false)
       setView(3)
     }catch(error) {
-      setLoading(false)
+      setVerifyOTPLoading(false)
       console.log(error)
     }
   }
@@ -57,7 +59,9 @@ function App() {
           />
         </div>
         <div className="button">
-          <button className="custom-button" onClick={requestOTP}>Request OTP</button>
+          <button className="custom-button" onClick={requestOTP}>
+            {requestOTPLoading ? 'Requesting OTP...' : 'Request OTP'}
+          </button>
         </div>
         </div>
         : view == 2 ? <div><div className="form-group">
@@ -69,7 +73,9 @@ function App() {
           />
         </div>
         <div className="button">
-          <button className="custom-button" onClick={verifyOTP}>Verify OTP</button>
+          <button className="custom-button" onClick={verifyOTP}>
+            {verifyOTPLoading ? 'Verifying OTP...' : 'Verify OTP'}
+          </button>
         </div></div>
         :<div>
           <div className="success">
