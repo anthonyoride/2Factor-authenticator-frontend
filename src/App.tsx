@@ -32,7 +32,8 @@ function App() {
     }
   }
 
-  const verifyOTP = async () => {
+  const verifyOTP = async (event: any) => {
+    event.preventDefault()
     setVerifyOTPLoading(true)
     try{
       const response = await api.post('/verify-otp', {
